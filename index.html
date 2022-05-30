@@ -7,7 +7,8 @@
       *{
         margin: 0;
         padding: 0;
-        font-family: sans-serif;
+        /* font-family: sans-serif; */
+        font-family: 'Courier New', monospace;
       }
       /* unvisited link */
       a:link {
@@ -177,7 +178,21 @@
     </div>
     <div id="display_details" style="width:20%; left:0%">
       <div class="fill_parent column_container free_element">   <!-- column of header and body -->
-        <div id="project_title" class="stretch_text big_header layout_element"></div>
+        <div id="project_title" class="stretch_text big_header layout_element">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="auto" viewBox="0 0 277.592 173.9133">
+            <defs>
+              <style>
+              /* specify clearly that the logo needs Courier New */
+              tspan{font-size:60px;fill:#231815;font-family:CourierNewPSMT, Courier New;}
+              .a{font-size:60px;fill:#231815;font-family:CourierNewPSMT, Courier New;letter-spacing:3.4263em;}
+              .b{letter-spacing:-0.1em;}
+              .c{letter-spacing:-0.0968em;}
+              .d{letter-spacing:0.071em;}
+            </style>
+          </defs>
+          <title>logo</title>
+          <text class="a" transform="translate(0.0002 47.1385)">A<tspan class="b" x="241.5864" y="0">N</tspan><tspan class="c"><tspan x="0" y="60">ARCHDAIL</tspan><tspan class="b" x="241.5864" y="60">Y</tspan></tspan><tspan class="d"><tspan x="0" y="120">LEXICO</tspan><tspan class="b" x="241.5864" y="120">N</tspan></tspan></text></svg>
+        </div>
         <div id="selected_group_info", class="layout_element slot row_column_container">CLICK&#160;<i>Cells</i>&#160;and WHEEL&#160;<i>Colors</i></div>
         <div id="list_cell_contents" class="column_container layout_element last_child"></div>
       </div>
@@ -188,22 +203,22 @@
     <script type="text/javascript">
       // initialization sequence
       // show title
-      (function(word){
-        const letters=word.split("");
-        let htmlspans=""
-        for (const l of letters){
-          if (l==" "){
-            htmlspans = htmlspans + ("<span>&nbsp;</span>");
-          }else if (l=="\n"){
-            htmlspans = htmlspans + "<br/>"
-          }else{
-            htmlspans = htmlspans + (`<span>${l}</span>`);
-          }
-        }
-        // assign header text
-        const detail_div=document.getElementById("project_title");
-        detail_div.innerHTML = htmlspans;
-      })("AN ARCHDAILY LEXICON");
+      // (function(word){
+      //   const letters=word.split("");
+      //   let htmlspans=""
+      //   for (const l of letters){
+      //     if (l==" "){
+      //       htmlspans = htmlspans + ("<span>&nbsp;</span>");
+      //     }else if (l=="\n"){
+      //       htmlspans = htmlspans + "<br/>"
+      //     }else{
+      //       htmlspans = htmlspans + (`<span>${l}</span>`);
+      //     }
+      //   }
+      //   // assign header text
+      //   const detail_div=document.getElementById("project_title");
+      //   detail_div.innerHTML = htmlspans;
+      // })("AN ARCHDAILY LEXICON");
 
       // record the predefined width for later use
       const predefined_width=document.getElementById("display_section").style.width;
