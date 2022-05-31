@@ -10,149 +10,13 @@
         /* font-family: sans-serif; */
         font-family: 'Courier New', monospace;
       }
-      /* unvisited link */
-      a:link {
-        color: gray;
-        text-decoration: none;
-      }
-
-      /* visited link */
-      a:visited {
-        color: gray;
-        text-decoration: none;
-      }
-
-      /* mouse over link */
-      a:hover {
-        color: black;
-        text-decoration: none;
-      }
-
-      /* selected link */
-      a:active {
-        color: gray;
-        text-decoration: none;
-      }
-  	  #display_section{
-    		position:absolute;
-        overflow: visible;
-    		/* width: 80%;
-    		left: 20%; */
-        transition-property: left width;
-            transition-duration: 0.2s;
-            transition-timing-function: ease;
-            transition-delay: 0s;
-        z-index: 0;
-  	  }
-      #display_details{
-        position:fixed;
-        display: flex;
-        height:100vh;
-        top:0%;
-
-        transition-property: left;
-            transition-duration: 0.2s;
-            transition-timing-function: ease;
-            transition-delay: 0s;
-        z-index: 1;
-      }
-      #som{
-        position:relative;
-        display: grid;
-        line-height: 0;
-        box-sizing: border-box;
-        width:100%;
-      }
-      .placed_button{
-        /* position:absolute; */
-        color:#ffffff;
-        background-color: rgba(255, 255, 255, 0.5);
-        border: 1px solid #ffffff;
-        text-align: center;
-        cursor: pointer;
-      }
-      .stretch_text{
-        position: relative;
-        width: 96%;
-        max-width: 96%;
-        padding: 2%;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      .big_header{
-        font-size: 60px;
-      }
-      img.cell_img {
-        position:relative;
-        width:100%;
-        border: 0px;
-        transform: scale(1.05);
-        /* z-index:1; */
-        transition-property: transform;
-            transition-duration: 0.2s;
-            transition-timing-function: ease;
-            transition-delay: 0s;
-      }
-      .free_element{
-        position: absolute;
-      }
-      .layout_element{
-        position: relative;
-      }
-      .fill_parent{
-        left:0%;
-        top:0%;
-        height: 100%;
-        width: 100%;
-      }
-      .column_container{
-        display: flex;
-        flex-direction: column;
-      }
-      .row_column_container{
-        display:flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-      }
-      .last_child{
-        flex-grow: 1;
-      }
-      .cell{
-        position:relative;
-        overflow: hidden;
-        border:0px;
-        transition-property: opacity;
-            transition-duration: 0.2s;
-            transition-timing-function: ease;
-            transition-delay: 0s;
-      }
-      .no_opacity{
-        opacity:1;
-      }
-      .has_opacity{
-        opacity:0.3;
-      }
-      .color_block::before{
-        margin-left: 10%;
-      }
-      .color_block{
-        width: 15px;
-        height: 15px;
-      }
-      .slot{
-        margin:2%;
-        color:gray;
-        text-align:justify;
-        word-break: break-all;
-        /* font-stretch: expanded; */
-      }
     </style>
+    <link rel="stylesheet" href="som_style.css">
     <!-- read data from json (js) files  -->
     <script type="text/javascript" src="data/som/20x20/cell_projects_sorted.js"></script>
-    <script type="text/javascript" src="data/som/20x20/namelist.js"></script>
-    <script type="text/javascript" src="data/som/20x20/urllist.js"></script>
+    <script type="text/javascript" src="data/som/15x15/cell_projects_sorted.js"></script>
+    <script type="text/javascript" src="data/som/namelist.js"></script>
+    <script type="text/javascript" src="data/som/urllist.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="listcontainer.js"></script>
     <script type="text/javascript" src="som.js"></script>
@@ -178,6 +42,7 @@
           <title>logo</title>
           <text class="a" transform="translate(0.0002 47.1385)">A<tspan class="b" x="241.5864" y="0">N</tspan><tspan class="c"><tspan x="0" y="60">ARCHDAIL</tspan><tspan class="b" x="241.5864" y="60">Y</tspan></tspan><tspan class="d"><tspan x="0" y="120">LEXICO</tspan><tspan class="b" x="241.5864" y="120">N</tspan></tspan></text></svg>
         </div>
+        <div id="som_selection", class="layout_element slot row_column_container", style="gap:30px"></div>
         <div id="selected_group_info", class="layout_element slot row_column_container">CLICK&#160;<i>Cells</i>&#160;and WHEEL&#160;<i>Colors</i></div>
         <div id="list_cell_contents" class="column_container layout_element last_child"></div>
       </div>
@@ -233,32 +98,65 @@
 
     <!-- js for initializing the SOM content -->
     <script type="text/javascript">
+    // GUI element, run onces
+    var list_container = create_list_container(document.getElementById("list_cell_contents"));
+    // touch functions
+    touchElement(list_container.slots, function(){list_container.update_bar_pos_by_slot()});
+    touchElement(list_container.pos_bar, function(){list_container.update_slot_pos_by_bar()});
+
+    // add buttons for changing SOM sizes
+    (function(sizes){
+      const parent=document.getElementById("som_selection");
+      for(let s of sizes){
+        const b=document.createElement("div");
+        b.className="placed_button layout_element";
+        b.style="color:gray;border:0px;width:50px;margin-top: 2px;margin-bottom: 2px;text-align:left";
+        b.innerText=`${s}x${s}`;
+        b.onclick=function(){make_som(s,100);};
+        b.onmouseover=function(e){b.style.color="black"};
+        b.onmouseout=function(e){b.style.color="gray"};
+        parent.appendChild(b);
+      }
+    })([15,20]);
+
+    // current size, and the function that creates a SOM
+    var current_size=0;
     const make_som = function(cell_num, img_size){
+      if (current_size==cell_num){
+        return;
+      }
+
+      if (cell_num==20){
+        cell_projects=cell_projects_20_sorted;
+      } else if (cell_num==15) {
+        cell_projects=cell_projects_15_sorted;
+      } else {
+        console.log("Not implemented yet");
+        return;
+      }
+
+      current_size=cell_num;
       // reset selection data
       selected_cells=[];
       selected_cell_groups={};
 
       const parent=document.getElementById("display_section");
+
+      // clean up if there is any
+      const all_children=parent.children;
+      for (let c of all_children){
+        parent.removeChild(c);
+      }
+
       // create a SOM with image grid
       const cells=create_som(parent, cell_num, img_size);
       // create essential operations that the cells need
-      const [on_change_selection, on_change_group] =create_som_GUI_operations(cells, document.getElementById("list_cell_contents"), document.getElementById("selected_group_info"));
+      const [on_change_selection, on_change_group] =create_som_GUI_operations(cells, list_container, document.getElementById("selected_group_info"));
       // make som cells trigger these operations
       add_cell_behaviour(cells, on_change_selection,on_change_group);
     };
+
     make_som(20,100);
-          // // display list area
-          // const list_div_obj=new overflowlist(document.getElementById("list_cell_contents"));
-          // // mouse wheel event on slots, update pos bar while wheeling
-          // wheelElement(list_div_obj.slots, function(){list_div_obj.update_bar_pos_by_slot()});
-          // dragElementY(list_div_obj.pos_bar, `${100-list_div_obj.bar_size_percentage}%`, function(){list_div_obj.update_slot_pos_by_bar()})
-
-    </script>
-
-    <script type="text/javascript">
-      // touch functions
-      // touchElement(list_div_obj.slots, function(){list_div_obj.update_bar_pos_by_slot()});
-      // touchElement(list_div_obj.pos_bar, function(){list_div_obj.update_slot_pos_by_bar()});
     </script>
   </body>
 </html>

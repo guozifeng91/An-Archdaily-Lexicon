@@ -1,4 +1,5 @@
 // declare the global variable selected_cells
+var cell_projects=[];
 var selected_cells=[];
 var selected_cell_groups={};
 
@@ -6,17 +7,20 @@ var selected_cell_groups={};
 const group_color=["#FEFEFA", "#848482", "#A52A2A", "#568203","#007FFF", "#1B1811"];
 const group_num_max=group_color.length;
 
-const create_som_GUI_operations = function(cells, div_list_cell_contents, div_selected_group_info){
+const create_list_container = function(div_list_cell_contents){
+  const list_div_obj=new overflowlist(div_list_cell_contents);
+  // mouse wheel event on slots, update pos bar while wheeling
+  wheelElement(list_div_obj.slots, function(){list_div_obj.update_bar_pos_by_slot()});
+  dragElementY(list_div_obj.pos_bar, `${100-list_div_obj.bar_size_percentage}%`, function(){list_div_obj.update_slot_pos_by_bar()})
+  return list_div_obj;
+};
+
+const create_som_GUI_operations = function(cells, list_div_obj, div_selected_group_info){
   // - cells: som cells
   // - div_list_cell_contents: parent div which hosts the content list
   // - div_selected_group_info: parent div which shows the info of selected groups
   // display list area
   const default_inner_text=div_selected_group_info.innerHTML;
-  const list_div_obj=new overflowlist(div_list_cell_contents);
-  // mouse wheel event on slots, update pos bar while wheeling
-  wheelElement(list_div_obj.slots, function(){list_div_obj.update_bar_pos_by_slot()});
-  dragElementY(list_div_obj.pos_bar, `${100-list_div_obj.bar_size_percentage}%`, function(){list_div_obj.update_slot_pos_by_bar()})
-
   // function 1
   // generate display items (the list)
   const show_contents_selected_cells=function () {
