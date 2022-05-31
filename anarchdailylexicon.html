@@ -121,6 +121,7 @@
 
     // current size, and the function that creates a SOM
     var current_size=0;
+    var last_ops=[];
     const make_som = function(cell_num, img_size){
       if (current_size==cell_num){
         return;
@@ -139,7 +140,9 @@
       // reset selection data
       selected_cells=[];
       selected_cell_groups={};
-
+      if (last_ops.length>0){
+        last_ops[0](); // reset GUI
+      }
       const parent=document.getElementById("display_section");
 
       // clean up if there is any
@@ -154,6 +157,7 @@
       const [on_change_selection, on_change_group] =create_som_GUI_operations(cells, list_container, document.getElementById("selected_group_info"));
       // make som cells trigger these operations
       add_cell_behaviour(cells, on_change_selection,on_change_group);
+      last_ops=[on_change_selection, on_change_group]; // replace GUI-related ops
     };
 
     make_som(20,100);
